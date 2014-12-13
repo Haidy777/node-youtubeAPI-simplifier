@@ -1,0 +1,20 @@
+{
+  "name": "node-youtubeAPI-simplifier",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "youtube-api": "^0.3.2",
+    "bluebird": "^2.3.11"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Haidy777/node-youtubeAPI-simplifier.git"
+  },
+  "author": "Haidy777",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Haidy777/node-youtubeAPI-simplifier/issues"
+  },
+  "homepage": "https://github.com/Haidy777/node-youtubeAPI-simplifier"
+}
