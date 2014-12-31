@@ -1,5 +1,7 @@
 var Promise = require('bluebird'),
-    playlistWrapper = require('./wrapper').playlists,
+    wrapper = require('./wrapper'),
+    playlistWrapper = wrapper.playlists,
+    playlistItemsWrapper = wrapper.playlistItems,
     channelFunctions = require('./channel-functions');
 
 var playlistFunctions = {
@@ -12,9 +14,9 @@ var playlistFunctions = {
      * });
      *
      * @method getAllPlaylistsForUser
-     * @param username
-     * @param pageToken
-     * @returns {*}
+     * @param {String}  username
+     * @param {String}  pageToken (optional)
+     * @returns {Promise}
      */
     getAllPlaylistsForUser: function (username, pageToken) {
         return channelFunctions.getChannelIdForUser(username).then(function (channelId) {
@@ -40,7 +42,8 @@ var playlistFunctions = {
                     videoCount: playlist.contentDetails.itemCount,
                     title: playlist.snippet.title,
                     description: playlist.snippet.description,
-                    publishedAt: playlist.snippet.publishedAt
+                    publishedAt: playlist.snippet.publishedAt,
+                    thumbnails: playlist.snippet.thumbnails
                 });
             }
 
@@ -51,6 +54,48 @@ var playlistFunctions = {
             }
 
             return Promise.all(playlists);
+        });
+    },
+
+    /**
+     * Gets all videos for a specified playlist.
+     *
+     * @method getAllVideosForPlaylist
+     * @param {String}  playlistId
+     * @param {String}  pageToken (optional)
+     * @returns {Promise}
+     */
+    getAllVideosForPlaylist: function (playlistId, pageToken) {
+        var params = {
+            playlistId: playlistId,
+            part: 'snippet',
+            maxResults: 50,
+            pageToken: pageToken || ''
+        };
+
+        return playlistItemsWrapper.list(params).then(function (data) {
+            var videos = [],
+                nextPageToken = data.nextPageToken || '',
+                dataItems = data.items;
+
+            for(var i = 0; i < dataItems.length; i++){
+                var video = dataItems[i].snippet;
+                videos.push({
+                    videoId: video.resourceId.videoId,
+                    title: video.title,
+                    description: video.description,
+                    publishedAt: video.publishedAt,
+                    thumbnails: video.thumbnails
+                });
+            }
+
+            if(nextPageToken !== ''){
+                return playlistFunctions.getAllVideosForPlaylist(playlistId, nextPageToken).then(function (data) {
+                    return videos.concat(data);
+                });
+            }
+
+            return Promise.all(videos);
         });
     }
 };

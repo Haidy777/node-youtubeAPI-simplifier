@@ -16,3 +16,9 @@ YTAPI.playlistFunctions.getAllPlaylistsForUser('gronkh').then(function (data) {
     console.log('All Playlists:');
     console.log(data);
 });
+
+//The used playlistID is just another playlist from gronkh.
+YTAPI.playlistFunctions.getAllVideosForPlaylist('PLGWGc5dfbzn_pvtJg7XskLva9XZpNTI88').then(function (data) {
+    console.log('All Videos:');
+    console.log(data);
+});
