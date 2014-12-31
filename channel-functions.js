@@ -27,6 +27,31 @@ var channelFunctions = {
                 videoCount: dataItem.videoCount
             }
         });
+    },
+
+    /**
+     * Gets the channelId for a specified user (somtimes needed insted of username).
+     *
+     * Example Usage:
+     * getChannelIdForUser('gronkh').then(function (data) {
+     *      console.log(data);
+     * });
+     *
+     * @method getChannelIdForUser
+     * @param {String} username
+     * @returns {Promise}
+     */
+    getChannelIdForUser: function (username) {
+        var params = {
+            part: 'contentDetails',
+            forUsername: username
+        };
+
+        return channelWrapper.list(params).then(function (data) {
+            return {
+                channelId: data.items[0].id
+            };
+        });
     }
 };
 
