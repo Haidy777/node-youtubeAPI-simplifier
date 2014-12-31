@@ -21,3 +21,8 @@ YTAPI.channelFunctions.getChannelIdForUser('gronkh').then(function (data) {
     console.log('ChannelId: ');
     console.log(data);
 });
+
+YTAPI.channelFunctions.getDetailsForUser('gronkh').then(function (data) {
+    console.log('ChannelDetails:');
+    console.log(data);
+});

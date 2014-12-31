@@ -52,6 +52,35 @@ var channelFunctions = {
                 channelId: data.items[0].id
             };
         });
+    },
+
+    /**
+     * Gets the channel details for a specified user.
+     *
+     * @param {String} username
+     * @returns {Promise}
+     */
+    getDetailsForUser: function (username) {
+        var params = {
+            part: 'contentDetails,snippet',
+            forUsername: username
+        };
+
+        return channelWrapper.list(params).then(function (data) {
+            var dataItem = data.items[0],
+                snippet = dataItem.snippet,
+                relatedPlaylists = dataItem.contentDetails.relatedPlaylists;
+            return {
+                channelId: dataItem.id,
+                title: snippet.title,
+                description: snippet.description,
+                publishedAt: snippet.publishedAt,
+                avatar: snippet.thumbnails,
+                likesPlaylist: relatedPlaylists.likes,
+                favoritesPlaylist: relatedPlaylists.favorites,
+                uploadsPlaylist: relatedPlaylists.uploads
+            }
+        });
     }
 };
 
