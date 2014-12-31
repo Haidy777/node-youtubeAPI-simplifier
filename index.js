@@ -23,7 +23,9 @@ var youtubeAPISimplifier = {
         });
     },
 
-    channelFunctions: require('./channel-functions')
+    channelFunctions: require('./channel-functions'),
+
+    playlistFunctions: require('./playlist-functions')
 };
 
 module.exports = youtubeAPISimplifier;
