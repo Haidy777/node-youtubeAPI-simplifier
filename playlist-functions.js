@@ -61,7 +61,61 @@ var playlistFunctions = {
     },
 
     /**
+     * Gets all Videos for a playlist.
+     * Used to clean up playlistFunctions.getVideosForPlaylist
+     *
+     * @param playlistId
+     * @param maxResults
+     * @param pageToken
+     * @returns {Promise}
+     * @private
+     */
+    _getVideosForPlaylist: function (playlistId, maxResults, pageToken) {
+        maxResults = maxResults || null;
+
+        var params = {
+            playlistId: playlistId,
+            part: 'snippet',
+            maxResults: 50,
+            pageToken: pageToken || ''
+        };
+
+        if (maxResults < 50 && maxResults !== null) {
+            params.maxResults = maxResults;
+        }
+
+        return playlistItemsWrapper.list(params).then(function (data) {
+            var videos = [],
+                nextPageToken = data.nextPageToken || '',
+                dataItems = data.items;
+
+            for (var i = 0; i < dataItems.length; i++) {
+                var video = dataItems[i].snippet;
+                videos.push({
+                    videoId: video.resourceId.videoId,
+                    title: video.title,
+                    description: video.description,
+                    publishedAt: video.publishedAt,
+                    thumbnails: video.thumbnails
+                });
+            }
+
+            if ((dataItems.length < maxResults || maxResults === null) && nextPageToken !== '') {
+                if (maxResults !== null) {
+                    maxResults = maxResults - dataItems.length
+                }
+                return playlistFunctions._getVideosForPlaylist(playlistId, maxResults, nextPageToken).then(function (data) {
+                    return videos.concat(data);
+                });
+            }
+
+            return Promise.all(videos);
+        });
+    },
+
+    /**
      * Gets all Playlists for a specified user.
+     * (Results can be limited by supplying maxResults)
      *
      * Example Usage:
      * getPlaylistsForUser('gronkh').then(function (data){
@@ -85,44 +139,15 @@ var playlistFunctions = {
 
     /**
      * Gets all videos for a specified playlist.
+     * (Results can be limited by supplying maxResults)
      *
-     * @method getAllVideosForPlaylist
+     * @method getVideosForPlaylist
      * @param {String}  playlistId
-     * @param {String}  pageToken (optional)
+     * @param {Number}  maxResults (optional) simple Number to limit results
      * @returns {Promise}
      */
-    getAllVideosForPlaylist: function (playlistId, pageToken) {
-        var params = {
-            playlistId: playlistId,
-            part: 'snippet',
-            maxResults: 50,
-            pageToken: pageToken || ''
-        };
-
-        return playlistItemsWrapper.list(params).then(function (data) {
-            var videos = [],
-                nextPageToken = data.nextPageToken || '',
-                dataItems = data.items;
-
-            for (var i = 0; i < dataItems.length; i++) {
-                var video = dataItems[i].snippet;
-                videos.push({
-                    videoId: video.resourceId.videoId,
-                    title: video.title,
-                    description: video.description,
-                    publishedAt: video.publishedAt,
-                    thumbnails: video.thumbnails
-                });
-            }
-
-            if (nextPageToken !== '') {
-                return playlistFunctions.getAllVideosForPlaylist(playlistId, nextPageToken).then(function (data) {
-                    return videos.concat(data);
-                });
-            }
-
-            return Promise.all(videos);
-        });
+    getVideosForPlaylist: function (playlistId, maxResults) {
+        return playlistFunctions._getVideosForPlaylist(playlistId, maxResults);
     }
 };
 

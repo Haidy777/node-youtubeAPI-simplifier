@@ -24,8 +24,14 @@ YTAPI.playlistFunctions.getPlaylistsForUser('gronkh', 10).then(function (data) {
     console.log(data);
 });
 
-//The used playlistID is just another playlist from gronkh.
-YTAPI.playlistFunctions.getAllVideosForPlaylist('PLGWGc5dfbzn_pvtJg7XskLva9XZpNTI88').then(function (data) {
+//Gets all videos for specified playlistID.
+YTAPI.playlistFunctions.getVideosForPlaylist('PLGWGc5dfbzn_pvtJg7XskLva9XZpNTI88').then(function (data) {
+    console.log('All Videos:');
+    console.log(data);
+});
+
+//Gets 10 videos for specified playlistID.
+YTAPI.playlistFunctions.getVideosForPlaylist('PLGWGc5dfbzn_pvtJg7XskLva9XZpNTI88', 10).then(function (data) {
     console.log('All Videos:');
     console.log(data);
 });
