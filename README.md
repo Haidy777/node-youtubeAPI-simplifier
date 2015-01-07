@@ -1,6 +1,5 @@
 #node-youtubeAPI-simplifier
-
-[![NPM](https://nodei.co/npm/node-youtubeapi-simplifier.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/node-youtubeapi-simplifier)
+[![NPM](https://nodei.co/npm/node-youtubeapi-simplifier.png)](https://www.npmjs.com/package/node-youtubeapi-simplifier)
 
 The Youtube-API probably isn't the simplest api in the world.
 So why isn't there a simplifier? Well, don't worry, now there is one :)

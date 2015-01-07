@@ -6,31 +6,31 @@ var Promise = require('bluebird'),
 
 var playlistFunctions = {
     /**
-     * Gets all Playlists for a specified user.
+     * Gets all Playlists for a specified channelId.
+     * Used to clean up playlistFunctions.getPlaylistsForUser
      *
-     * Example Usage:
-     * getAllPlaylistsForUser('gronkh').then(function (data){
-     *       console.log(data);
-     * });
-     *
-     * @method getAllPlaylistsForUser
-     * @param {String}  username
-     * @param {String}  pageToken (optional)
+     * @method _getPlaylistsForChannelId
+     * @param channelId
+     * @param maxResults
+     * @param pageToken
      * @returns {Promise}
+     * @private
      */
-    getAllPlaylistsForUser: function (username, pageToken) {
-        return channelFunctions.getChannelIdForUser(username).then(function (channelId) {
-            var params = {
-                channelId: channelId.channelId,
-                part: 'contentDetails,snippet',
-                maxResults: 50,
-                pageToken: pageToken || ''
-            };
+    _getPlaylistsForChannelId: function (channelId, maxResults, pageToken) {
+        maxResults = maxResults || null;
 
-            return playlistWrapper.list(params).then(function (data) {
-                return data;
-            });
-        }).then(function (data) {
+        var params = {
+            channelId: channelId,
+            part: 'contentDetails,snippet',
+            maxResults: 50,
+            pageToken: pageToken || ''
+        };
+
+        if (maxResults < 50 && maxResults !== null) {
+            params.maxResults = maxResults;
+        }
+
+        return playlistWrapper.list(params).then(function (data) {
             var dataItems = data.items,
                 nextPageToken = data.nextPageToken || '',
                 playlists = [];
@@ -47,13 +47,39 @@ var playlistFunctions = {
                 });
             }
 
-            if (nextPageToken !== '') {
-                return playlistFunctions.getAllPlaylistsForUser(username, nextPageToken).then(function (data) {
+            if ((dataItems.length < maxResults || maxResults === null) && nextPageToken !== '') {
+                if (maxResults !== null) {
+                    maxResults = maxResults - dataItems.length
+                }
+                return playlistFunctions._getPlaylistsForChannelId(channelId, maxResults, nextPageToken).then(function (data) {
                     return playlists.concat(data);
                 });
             }
 
             return Promise.all(playlists);
+        });
+    },
+
+    /**
+     * Gets all Playlists for a specified user.
+     *
+     * Example Usage:
+     * getPlaylistsForUser('gronkh').then(function (data){
+     *       console.log(data);
+     * });
+     *
+     * getPlaylistsForUser('gronkh', 10).then(function (data){ //Retuns a maximum of 10 playlists.
+     *       console.log(data);
+     * });
+     *
+     * @method getPlaylistsForUser
+     * @param {String}  username
+     * @param {Number}  maxResults (optional) simple Number to limit results
+     * @returns {Promise}
+     */
+    getPlaylistsForUser: function (username, maxResults) {
+        return channelFunctions.getChannelIdForUser(username).then(function (channelId) {
+            return playlistFunctions._getPlaylistsForChannelId(channelId.channelId, maxResults);
         });
     },
 
@@ -78,7 +104,7 @@ var playlistFunctions = {
                 nextPageToken = data.nextPageToken || '',
                 dataItems = data.items;
 
-            for(var i = 0; i < dataItems.length; i++){
+            for (var i = 0; i < dataItems.length; i++) {
                 var video = dataItems[i].snippet;
                 videos.push({
                     videoId: video.resourceId.videoId,
@@ -89,7 +115,7 @@ var playlistFunctions = {
                 });
             }
 
-            if(nextPageToken !== ''){
+            if (nextPageToken !== '') {
                 return playlistFunctions.getAllVideosForPlaylist(playlistId, nextPageToken).then(function (data) {
                     return videos.concat(data);
                 });

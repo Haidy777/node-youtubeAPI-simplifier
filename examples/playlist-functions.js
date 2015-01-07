@@ -12,7 +12,14 @@ var APIKEY = '###########'; //Must be Replaced by your API-Key
 
 YTAPI.setup(APIKEY);
 
-YTAPI.playlistFunctions.getAllPlaylistsForUser('gronkh').then(function (data) {
+//Gets all playlists for user 'gronkh'
+YTAPI.playlistFunctions.getPlaylistsForUser('gronkh').then(function (data) {
+    console.log('All Playlists:');
+    console.log(data);
+});
+
+//Gets only 10 playlists for user 'gronkh'
+YTAPI.playlistFunctions.getPlaylistsForUser('gronkh', 10).then(function (data) {
     console.log('All Playlists:');
     console.log(data);
 });
