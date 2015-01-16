@@ -25,7 +25,9 @@ var youtubeAPISimplifier = {
 
     channelFunctions: require('./channel-functions'),
 
-    playlistFunctions: require('./playlist-functions')
+    playlistFunctions: require('./playlist-functions'),
+
+    searchFunctions: require('./search-functions')
 };
 
 module.exports = youtubeAPISimplifier;
