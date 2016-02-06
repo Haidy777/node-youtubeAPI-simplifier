@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "youtube-api": "^0.3.2",
-    "bluebird": "^2.3.11"
+    "bluebird": "3.2.2",
+    "youtube-api": "1.4.0"
   },
   "repository": {
     "type": "git",
