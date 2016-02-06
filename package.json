@@ -1,6 +1,6 @@
 {
   "name": "node-youtubeapi-simplifier",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "",
   "main": "index.js",
   "dependencies": {
