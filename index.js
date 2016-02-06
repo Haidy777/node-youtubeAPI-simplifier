@@ -23,13 +23,13 @@ var youtubeAPISimplifier = {
         });
     },
 
-    channelFunctions: require('./channel-functions'),
+    channelFunctions: require('./lib/channel-functions'),
 
-    playlistFunctions: require('./playlist-functions'),
+    playlistFunctions: require('./lib/playlist-functions'),
 
-    searchFunctions: require('./search-functions'),
+    searchFunctions: require('./lib/search-functions'),
 
-    videoFunctions: require('./video-functions')
+    videoFunctions: require('./lib/video-functions')
 };
 
 module.exports = youtubeAPISimplifier;
