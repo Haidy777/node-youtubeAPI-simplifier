@@ -29,7 +29,9 @@ var youtubeAPISimplifier = {
 
     searchFunctions: require('./lib/search-functions'),
 
-    videoFunctions: require('./lib/video-functions')
+    videoFunctions: require('./lib/video-functions'),
+
+    activitiesFunctions: require('./lib/activities-functions')
 };
 
 module.exports = youtubeAPISimplifier;
